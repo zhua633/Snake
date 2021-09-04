@@ -1,13 +1,12 @@
 import pygame
-import time
 import random
 
 #Initiates pygame
 pygame.init()
 
 #Defining variables
-width=100
-height=100
+width=200
+height=200
 speed=60
 
 white = (255, 255, 255)
@@ -22,13 +21,17 @@ blue = (50, 153, 213)
 dis=pygame.display.set_mode((width,width))
 pygame.display.set_caption('Snake')
 
+def show_score(score):
+    surf=pygame.font.SysFont(None, 20).render('Score:'+str(score),True,red)
+    dis.blit(surf,surf.get_rect())
+
 def snake(snake_list):
     for n in snake_list:
         pygame.draw.rect(dis,red,[n[0],n[1],10,10])
 
 #Function print_screen() prints a message on screen
 def print_screen(message,color):
-    message=pygame.font.SysFont(None, 10).render(message,True,color)
+    message=pygame.font.SysFont(None, 20).render(message,True,color)
     message_center=(
         (width-message.get_width())/2,
         (height-message.get_height())/2
@@ -41,11 +44,14 @@ clock=pygame.time.Clock()
 def game():
     game_over=False
     game_quit=False
+    score=0
+
 
     x=width/2
     y=height/2
     snake_list=[]
     snake_len=1
+    
 
     foodx=round(random.randrange(0,(width-10)/10)*10)
     foody=round(random.randrange(0,(height-10)/10)*10)
@@ -97,6 +103,7 @@ def game():
                 game_quit=True
         
         snake(snake_list)
+        show_score(score)
         pygame.display.update()
 
         if x==foodx and y==foody:
@@ -104,6 +111,7 @@ def game():
                 foody=round(random.randrange(0,(height-10)/10)*10)
                 food=[foodx,foody,10,10]
                 snake_len+=1
+                score+=1
 
         clock.tick(speed)
 
