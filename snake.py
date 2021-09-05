@@ -1,19 +1,17 @@
 import pygame
 import random
 
-#Initiates pygame
+#Initiate pygame
 pygame.init()
 
 #Defining variables
 width=200
 height=200
-speed=60
+speed=10
 
 white = (255, 255, 255)
-yellow = (255, 255, 102)
 black = (0, 0, 0)
 red = (213, 50, 80)
-green = (0, 255, 0)
 blue = (50, 153, 213)
 
 #Creates an instance of the calss and returns it.
@@ -46,13 +44,14 @@ def game():
     game_quit=False
     score=0
 
-
     x=width/2
     y=height/2
     snake_list=[]
     snake_len=1
-    
 
+    dx=0
+    dy=0
+    
     foodx=round(random.randrange(0,(width-10)/10)*10)
     foody=round(random.randrange(0,(height-10)/10)*10)
     food=[foodx,foody,10,10]
@@ -78,45 +77,54 @@ def game():
                 game_over=True
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_LEFT:
-                    x=x-10
-                if event.key==pygame.K_RIGHT:
-                    x=x+10
-                if event.key==pygame.K_UP:
-                    y=y-10
-                if event.key==pygame.K_DOWN:
-                    y=y+10
+                    dx=-10
+                    dy=0
+                elif event.key==pygame.K_RIGHT:
+                    dx=10
+                    dy=0
+                elif event.key==pygame.K_UP:
+                    dx=0
+                    dy=-10
+                elif event.key==pygame.K_DOWN:
+                    dx=0
+                    dy=+10
         
-        if x>width or x<0 or y>height or y<0:
+        if x>width-1 or x<1 or y>height-1 or y<1:
             game_quit=True
 
+        x+=dx
+        y+=dy
         #Fill up the entire screen
         dis.fill(black)
         pygame.draw.rect(dis,white,food)
+        snake_head=[]
+        snake_head.append(x)
+        snake_head.append(y)
+        snake_list.append(snake_head)
 
-        #Draw a new dot at current position
-        snake_list.append([x,y])
         if len(snake_list)>snake_len:
             del snake_list[0]
 
         for n in snake_list[:-1]:
-            if x==snake_list[0]:
+            if n==snake_head:
                 game_quit=True
-        
-        snake(snake_list)
+
         show_score(score)
+        snake(snake_list)
         pygame.display.update()
 
         if x==foodx and y==foody:
                 foodx=round(random.randrange(0,(width-10)/10)*10)
                 foody=round(random.randrange(0,(height-10)/10)*10)
                 food=[foodx,foody,10,10]
-                snake_len+=1
                 score+=1
+                snake_len+=1         
 
         clock.tick(speed)
 
     pygame.quit()
     quit()
+
 
 game()
 
